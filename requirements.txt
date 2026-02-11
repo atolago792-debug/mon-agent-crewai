@@ -1,2 +1,3 @@
-crewai
-langchain_openai
+crewai[google-genai]
+langchain-google-genai
+
