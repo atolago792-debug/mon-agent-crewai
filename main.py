@@ -1,15 +1,30 @@
 import os
-from crewai import Agent, Task, Crew, Process
+from crewai import Agent, Task, Crew, LLM
 
-# Configuration pour Gemini
-# (Remplace 'gemini-1.5-flash' par 'gemini-1.5-pro' si tu préfères)
-mon_llm = "gemini/gemini-1.5-flash"
+# On définit le modèle Gemini
+mon_llm = LLM(model="gemini/gemini-1.5-flash", api_key=os.environ.get("GEMINI_API_KEY"))
 
-# Ajoute 'llm=mon_llm' à chaque agent
+# On donne ce modèle à l'agent
 chercheur = Agent(
   role='Chercheur',
   goal='Trouver des infos',
-  backstory="Expert en data.",
-  llm=mon_llm,  # <--- TRÈS IMPORTANT
+  backstory="Expert IA.",
+  llm=mon_llm,  # <--- NE PAS OUBLIER CETTE LIGNE
   verbose=True
 )
+# 1. On définit la mission (Task)
+ma_tache = Task(
+    description="Explique en 3 points pourquoi CrewAI est génial avec Gemini.",
+    expected_output="Un résumé court en français.",
+    agent=chercheur
+)
+
+# 2. On crée l'équipe et on lance le travail
+equipe = Crew(
+    agents=[chercheur],
+    tasks=[ma_tache],
+    verbose=True
+)
+
+print("### L'agent commence son travail... ###")
+equipe.kickoff()
